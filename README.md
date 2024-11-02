@@ -15,7 +15,8 @@ UPD::CreateProxy(dll);
 * No [LoadLibrary calls](https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-best-practices) within DllMain
 * Works for 32-bit and 64-bit games (32-bit has limited support!)
 
-UPD is mainly designed with game modding and the distribution of mods in mind. 
+UPD is mainly designed with game modding and the distribution of mods in mind.
+
 With the limited namespace available for proxy DLLs and thus the possibility of conflicts, letting your users use any DLL name without distributing multiple versions of your mod is a big plus.
 
 ## Usage
@@ -159,6 +160,7 @@ This search order is followed to find the original DLL:
 * Path specified in the call to UPD::CreateProxy (optional)
 * The current directory (to do this, add a "_" prefix to the name of the original DLL)
 * The system folder
+  
 If the DLL is not found in one location, the next location is attempted. In other words this mimics the Microsoft DLL search order.
 
 ### Easy way to proxy single DLLs
