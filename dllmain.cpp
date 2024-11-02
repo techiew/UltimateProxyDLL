@@ -1,6 +1,7 @@
 #include <Windows.h>
+#include <iostream>
 
-#include "UniversalProxyDLL.h"
+#include "UltimateProxyDLL.h"
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {

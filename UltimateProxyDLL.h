@@ -1,6 +1,6 @@
 #pragma once
 
-// https://github.com/techiew/UniversalProxyDLL
+// https://github.com/techiew/UltimateProxyDLL
 
 #include <Windows.h>
 #include <iostream>
@@ -107,6 +107,16 @@ namespace UPD
 			Log("Invalid callback (nullptr): ", exportName);
 		}
 		return nullptr;
+	}
+
+	void ChainLoadFromFile(std::string chainLoadFile = "upd_chainload.txt")
+	{
+
+	}
+
+	void ChainLoadAllDllsInFolder(std::string folderPath, bool recursive = false)
+	{
+
 	}
 
 	void CreateProxy(HMODULE dllToProxy, std::string specificPathToSearch = "")
@@ -581,7 +591,7 @@ namespace UPD
 
 	void LogAndThrow(std::string exceptionMessage)
 	{
-		Log("UniversalProxyDLL > Exception thrown: ", exceptionMessage);
+		Log("UltimateProxyDLL > Exception thrown: ", exceptionMessage);
 		throw std::runtime_error(exceptionMessage);
 	}
 
@@ -599,7 +609,7 @@ namespace UPD
 		}
 
 		std::stringstream stream;
-		stream << "UniversalProxyDLL > ";
+		stream << "UltimateProxyDLL > ";
 
 		// Magic to fold variadic arguments prior to C++17
 		// https://stackoverflow.com/a/55717030
@@ -806,6 +816,8 @@ Export(0, D3D11CreateDeviceForD3D12) Export(1, D3DKMTCloseAdapter) Export(2, D3D
 Export(50, D3DPerformance_SetMarker)
 
 // d3d12
+// Needs a workaround using macros since for some reason the normal method does not work with this DLL.
+// See issue #1 on Github.
 #ifdef _WIN64
 #define DLLPATH "\\\\.\\GLOBALROOT\\SystemRoot\\System32\\D3D12.dll"
 #else
@@ -829,7 +841,6 @@ Export(50, D3DPerformance_SetMarker)
 #pragma comment(linker, "/EXPORT:D3D12SerializeVersionedRootSignature=" DLLPATH ".D3D12SerializeVersionedRootSignature")
 #pragma comment(linker, "/EXPORT:GetBehaviorValue=" DLLPATH ".GetBehaviorValue")
 #pragma comment(linker, "/EXPORT:SetAppCompatStringPointer=" DLLPATH ".SetAppCompatStringPointer")
-#pragma comment(linker, "/EXPORT:__proxy9999=" DLLPATH ".#9999,@9999,NONAME")
 
 // dinput8
 Export(0, DirectInput8Create) Export(1, DllCanUnloadNow) Export(2, DllGetClassObject) Export(3, DllRegisterServer) Export(4, DllUnregisterServer) Export(5, GetdfDIJoystick)

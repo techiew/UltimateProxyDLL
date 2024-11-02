@@ -1,0 +1,1 @@
+Export(0, DllMain) Export(1, XInputGetState) Export(2, XInputSetState) Export(3, XInputGetCapabilities) Export(4, XInputEnable) Export(5, XInputGetBatteryInformation) Export(6, XInputGetKeystroke) Export(7, XInputGetAudioDeviceIds) 
