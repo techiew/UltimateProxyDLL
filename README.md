@@ -2,22 +2,18 @@
 A header-only library for proxying DLLs with one function call:
 
 ```cpp
-UPD::CreateProxy(dll);
+upd::CreateProxy(dll);
 ```
 
 ### Features:
 * No .masm or other assembly files required
 * No module definition files (.def) files required
-* No project configuration required
 * Built DLL can dynamically proxy any [supported DLL](#supported-dlls) without rebuilding (just rename the DLL)
 * Easily create [callbacks](#adding-a-callback) for exported functions
 * No race conditions (exported functions will wait for proxy creation)
-* No [LoadLibrary calls](https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-best-practices) within DllMain
-* Works for 32-bit and 64-bit games (32-bit has limited support!)
+* Works for 32-bit and 64-bit games and applications (32-bit has limited support!)
 
-UPD is mainly designed with game modding and the distribution of mods in mind.
-
-With the limited namespace available for proxy DLLs and thus the possibility of conflicts, letting your users use any DLL name without distributing multiple versions of your mod is a big plus.
+UPD is mainly designed with game modding and the distribution of mods in mind. With the limited namespace available for proxy DLLs and thus the possibility of conflicts, letting your users use any DLL name without distributing multiple versions of your mod is a big plus.
 
 ## Usage
 A simple DllMain is all that is needed:
@@ -127,7 +123,7 @@ The most common proxy DLLs are supported out of the box:
 
 See section [Adding support for a DLL](#adding-support-for-a-dll). 
 
-**Note: I do not guarantee that all supported DLLs will work for 32-bit games. Trial and error is required in this case.**
+**Note: I do not guarantee that all supported DLLs will work for 32-bit applications. Trial and error is required in this case.**
 
 ## Adding support for a DLL
 Adding support for a DLL is simple. In the "python_scripts" folder you will find some Python scripts. 
@@ -148,10 +144,12 @@ The DLL should now be proxied correctly.
 
 ## Tips and tricks
 
-### Checking which DLLs a game loads
-To check which DLLs you can use to create proxies for specific games, you may for example use the `dumpbin` tool provided with Visual Studio:
+### Checking which DLLs an application loads
+To check which DLLs you can use to create proxies for specific applications, you may for example use the `dumpbin` tool provided with Visual Studio:
 
 ![Dumpbin pic](https://github.com/techiew/UltimateProxyDLL/blob/master/readme_pictures/dumpbin.png)
+
+But there are many other ways of doing this.
 
 ### Proxy DLL search order
 UPD loads the original to-be-proxied DLL into memory to perform the proxy.
@@ -161,7 +159,7 @@ This search order is followed to find the original DLL:
 * The current directory (to do this, add a "_" prefix to the name of the original DLL)
 * The system folder
   
-If the DLL is not found in one location, the next location is attempted. In other words this mimics the Microsoft DLL search order.
+If the DLL is not found in one location, the next location is attempted. This mimics the Microsoft DLL search order.
 
 ### Easy way to proxy single DLLs
 If you don't care about:
