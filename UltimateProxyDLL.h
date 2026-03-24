@@ -550,14 +550,14 @@ namespace upd
 
 	void log_and_throw(std::string exception_message)
 	{
-		log("UltimateProxyDLL > Exception thrown: ", exception_message);
+		log("UPD > Exception thrown: ", exception_message);
 		throw std::runtime_error(exception_message);
 	}
 
 	template<typename... types>
 	void log(types... args)
 	{
-		if (logging_enabled)
+		if (!logging_enabled)
 		{
 			return;
 		}
@@ -568,7 +568,7 @@ namespace upd
 		}
 
 		std::stringstream stream;
-		stream << "UltimateProxyDLL > ";
+		stream << "UPD > ";
 
 		// Magic to fold variadic arguments prior to C++17
 		// https://stackoverflow.com/a/55717030
