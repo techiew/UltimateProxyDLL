@@ -1,5 +1,5 @@
 # Ultimate Proxy DLL
-A header-only library for proxying DLLs with one function call:
+Header-only library for proxying DLLs with one function call:
 
 ```cpp
 upd::create_proxy(dll);
@@ -106,7 +106,7 @@ Your callback will be called directly prior to the function being executed.
 
 **Note: It's crucial that the function signature for the callback exactly matches the function signature of the exported function, including the calling convention. For instance, the function signature for "DirectInput8Create" used in the example was found [here](https://documentation.help/directx8_c/directinput8create.htm).**
 
-**As for the** `return` **with a call to the original exported function - in some cases you might get away with omitting it, but I wouldn't recommend it.**
+**As for the** `return` **with a call to the original function - in some cases you might get away with omitting it, but it will probably just crash.**
 
 ## Supported DLLs
 The most common proxy DLLs are supported out of the box:
