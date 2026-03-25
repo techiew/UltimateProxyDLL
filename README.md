@@ -2,7 +2,7 @@
 A header-only library for proxying DLLs with one function call:
 
 ```cpp
-upd::CreateProxy(dll);
+upd::create_proxy(dll);
 ```
 
 ### Features:
@@ -15,7 +15,7 @@ upd::CreateProxy(dll);
 
 UPD is mainly designed with game modding and the distribution of mods in mind. With the limited namespace available for proxy DLLs and thus the possibility of conflicts, letting your users use any DLL name without distributing multiple versions of your mod is a big plus.
 
-## Usage
+## Example usage
 A simple DllMain is all that is needed:
 
 ```cpp
@@ -25,12 +25,12 @@ A simple DllMain is all that is needed:
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
-    if (fdwReason == DLL_PROCESS_ATTACH)
-    {
-        UPD::OpenDebugTerminal();
-        UPD::CreateProxy(hinstDLL);
-    }
-    return TRUE;
+	if (fdwReason == DLL_PROCESS_ATTACH)
+	{
+		upd::open_debug_terminal();
+		upd::create_proxy(hinstDLL);
+	}
+	return TRUE;
 }
 ```
 
@@ -38,7 +38,7 @@ That's it! The DLL will then be proxied properly.
 
 In the following example, Elden Ring was proxied with a dxgi.dll proxy:
 
-![Proxy example pic](https://github.com/techiew/UltimateProxyDLL/blob/master/readme_pictures/proxy_example.png)
+![Proxy example pic](https://github.com/techiew/UltimateProxyDLL/blob/master/Readme%20pictures/proxy_example.png)
 
 **Note: The debug terminal is optional.**
 
@@ -61,9 +61,11 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
     if (fdwReason == DLL_PROCESS_ATTACH)
     {
-        UPD::OpenDebugTerminal();
-        UPD::CreateProxy(hinstDLL);
+        upd::open_debug_terminal();
+        upd::create_proxy(hinstDLL);
         CreateThread(0, 0, &NewThread, NULL, 0, NULL);
+        // Alternatively:
+        // upd::create_proxy_and_thread(hinstDLL, &NewThread);
     }
     return TRUE;
 }
@@ -77,22 +79,22 @@ You may add callbacks back to your own code for when an exported function is cal
 
 #include "UltimateProxyDLL.h"
 
-using FpDirectInput8Create = HRESULT (*)(HINSTANCE, DWORD, REFIID, LPVOID*, LPUNKNOWN);
-void* fpDirectInput8Create = nullptr;
+using FpDirectInput8Create = HRESULT(WINAPI*)(HINSTANCE, DWORD, REFIID, LPVOID*, LPUNKNOWN);
+FpDirectInput8Create* fpDirectInput8Create = nullptr;
 
 HRESULT CallbackDirectInput8Create(HINSTANCE hinst, DWORD dwVersion, REFIID riidltf, LPVOID* ppvOut, LPUNKNOWN punkOuter)
 {
     printf("Callback called!\n");
-    return (*(FpDirectInput8Create*)fpDirectInput8Create)(hinst, dwVersion, riidltf, ppvOut, punkOuter);
+    return (*fpDirectInput8Create)(hinst, dwVersion, riidltf, ppvOut, punkOuter);
 }
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
     if (fdwReason == DLL_PROCESS_ATTACH)
     {
-        UPD::OpenDebugTerminal();
-        fpDirectInput8Create = UPD::RegisterCallback("DirectInput8Create", &CallbackDirectInput8Create);
-        UPD::CreateProxy(hinstDLL);
+        upd::open_debug_terminal();
+        upd::register_callback("DirectInput8Create", &CallbackDirectInput8Create, &fpDirectInput8Create);
+        upd::create_proxy(hinstDLL);
     }
     return TRUE;
 }
@@ -100,9 +102,9 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 
 Dinput8.dll was proxied in this example. 
 
-Your callback will be called directly prior to the exported function being executed.
+Your callback will be called directly prior to the function being executed.
 
-**Note: It's crucial that the function signature for the callback exactly matches the function signature of the exported function. For instance, the function signature for "DirectInput8Create" used in the example was found [here](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/ee416756(v=vs.85)).**
+**Note: It's crucial that the function signature for the callback exactly matches the function signature of the exported function, including the calling convention. For instance, the function signature for "DirectInput8Create" used in the example was found [here](https://documentation.help/directx8_c/directinput8create.htm).**
 
 **As for the** `return` **with a call to the original exported function - in some cases you might get away with omitting it, but I wouldn't recommend it.**
 
@@ -123,22 +125,18 @@ The most common proxy DLLs are supported out of the box:
 
 See section [Adding support for a DLL](#adding-support-for-a-dll). 
 
-**Note: I do not guarantee that all supported DLLs will work for 32-bit applications. Trial and error is required in this case.**
+**Note: I do not guarantee that all DLLs will work for 32-bit applications. Trial and error is required in this case.**
 
 ## Adding support for a DLL
-Adding support for a DLL is simple. In the "python_scripts" folder you will find some Python scripts. 
+Adding support for a DLL is simple. In the "Python scripts" folder you will find some useful scripts. 
 
-Use the `create_export_list.py` script by running `python create_export_list.py <path_to_dll>`. This will create a "&lt;dll&gt;_export_list.txt" file in the script folder:
+Use the `generate_export_list_for_dll.py` script by running `python generate_export_list_for_dll.py <path_to_dll>`. This will create a "&lt;dll&gt;_export_list.txt" file in the script folder. Copy the contents of the generated file to somewhere at the bottom of "UltimateProxyDLL.h" and build:
 
-![create_export_list pic](https://github.com/techiew/UltimateProxyDLL/blob/master/readme_pictures/create_export_list.png)
-
-Copy the contents of the generated file to somewhere at the bottom of "UltimateProxyDLL.h" and build:
-
-![New exports pic](https://github.com/techiew/UltimateProxyDLL/blob/master/readme_pictures/new_exports.png)
+![New exports pic](https://github.com/techiew/UltimateProxyDLL/blob/master/Readme%20pictures/new_exports.png)
 
 The DLL should now be proxied correctly. 
 
-**Note: If your DLL has a higher number of exports than the current amount of Forward and ForwardOrdinal functions, you must also use the scripts `create_export_ordinals.py` and `create_forward_functions.py` to generate an amount of functions equal to or higher than the number of exports of your DLL.**
+**Note: If your newly added DLL has a higher number of exports than the current amount of `forward_function_stubs` and `forward_ordinal_function_stubs`, you must also use the script `generate_forward_function_stubs.py` to generate an amount of function stubs equal to or higher than the number of exports of your DLL.**
 
 **Also note: Some system DLLs such as user32 may refuse to be proxied!**
 
@@ -147,7 +145,7 @@ The DLL should now be proxied correctly.
 ### Checking which DLLs an application loads
 To check which DLLs you can use to create proxies for specific applications, you may for example use the `dumpbin` tool provided with Visual Studio:
 
-![Dumpbin pic](https://github.com/techiew/UltimateProxyDLL/blob/master/readme_pictures/dumpbin.png)
+![Dumpbin pic](https://github.com/techiew/UltimateProxyDLL/blob/master/Readme%20pictures/dumpbin.png)
 
 But there are many other ways of doing this.
 
