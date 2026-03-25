@@ -44,7 +44,6 @@ namespace upd
 	WORD num_sections = 0;
 
 	// Function prototypes
-	void* register_callback(std::string export_name, void* callback_address);
 	void create_proxy_and_thread(HMODULE dll_to_proxy, LPTHREAD_START_ROUTINE function, std::string specific_path_to_search);
 	void create_proxy(HMODULE dll_to_proxy, std::string specific_path_to_search);
 	std::string get_dll_file_name_from_module_handle(HMODULE handle);
@@ -80,19 +79,19 @@ namespace upd
 	void enable_logging(bool enable);
 	void open_debug_terminal();
 
-	void* register_callback(std::string export_name, void* callback_address)
+	template<typename T>
+	void register_callback(std::string export_name, void* callback_address, T** return_address_holder)
 	{
 		if (callback_address != nullptr)
 		{
 			callbacks[export_name].callback_address = (uintptr_t)callback_address;
+			*return_address_holder = (T*)(&callbacks[export_name].return_address);
 			log("Registered callback for: ", export_name);
-			return &callbacks[export_name].return_address;
 		}
 		else
 		{
 			log("Invalid callback (nullptr): ", export_name);
 		}
-		return nullptr;
 	}
 	
 	void create_proxy_and_thread(HMODULE dll_to_proxy, LPTHREAD_START_ROUTINE function, std::string specific_path_to_search = "")
