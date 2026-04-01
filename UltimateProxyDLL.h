@@ -11,6 +11,9 @@
 #include <iomanip>
 #include <sstream>
 
+// Incremental linking must be disabled to avoid conflicts
+#pragma comment(linker, "/INCREMENTAL:NO /IGNORE:4202,4104,4197")
+
 extern const std::vector<void*> forward_function_stubs;
 extern const std::vector<void*> forward_ordinal_function_stubs;
 extern const std::vector<void*> forward_shared_function_stubs;
