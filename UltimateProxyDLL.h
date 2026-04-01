@@ -11,7 +11,6 @@
 #include <iomanip>
 #include <sstream>
 
-// Forward declare, these are defined at the bottom
 extern const std::vector<void*> forward_function_stubs;
 extern const std::vector<void*> forward_ordinal_function_stubs;
 extern const std::vector<void*> forward_shared_function_stubs;
