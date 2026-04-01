@@ -140,6 +140,13 @@ The DLL should now be proxied correctly.
 
 **Also note: Some system DLLs such as user32 may refuse to be proxied!**
 
+## Compiler
+Please note that the code must be compiled with MSVC due to MSVC-specific linker options (maybe there are other compilers out there that support these aswell). 
+
+If you do not wish to use MSVC for your other code, a good option is to build your code into a separate DLL which is then loaded by the main DLL.
+
+Other than that, traditional runtime DLL forwarding is probably your only option if MSVC is not possible.
+
 ## Tips and tricks
 
 ### Checking which DLLs an application loads
@@ -153,7 +160,7 @@ But there are many other ways of doing this.
 UPD loads the original to-be-proxied DLL into memory to perform the proxy.
 
 This search order is followed to find the original DLL:
-* Path specified in the call to UPD::CreateProxy (optional)
+* Path specified in the call to upd::create_proxy (optional)
 * The current directory (to do this, add a "_" prefix to the name of the original DLL)
 * The system folder
   
@@ -162,13 +169,12 @@ If the DLL is not found in one location, the next location is attempted. This mi
 ### Easy way to proxy single DLLs
 If you don't care about:
 * Function interception/hooking
-* Supporting proxying of multiple DLLs at once without rebuilding
+* Dynamic proxying of multiple DLLs at once without rebuilding
 * Proxying a DLL that could be in multiple locations (current directory, system folder, ...)
 
 Then you can simply use this [macro method](https://github.com/mrexodia/perfect-dll-proxy/).
 
 This method is lightweight, does not require assembly or .def files, and will find the system folder correctly even if someone with a system drive different from yours uses your DLL.
-But it can run into issues with ordinals if you want to support dynamic proxying of multiple DLLs at once.
 
 ### Precompiled DLL for chainloading
 I have provided a [precompiled DLL](https://github.com/techiew/UltimateProxyDLL/releases/tag/precompiled-dll) to be used for simple chainloading.
