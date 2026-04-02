@@ -609,7 +609,6 @@ namespace upd
 	{
 		if (AllocConsole())
 		{
-			enable_logging();
 			freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 			SetWindowText(GetConsoleWindow(), "UPD");
 		}

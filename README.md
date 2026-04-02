@@ -27,6 +27,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
 	if (fdwReason == DLL_PROCESS_ATTACH)
 	{
+        upd::enable_logging();
 		upd::open_debug_terminal();
 		upd::create_proxy(hinstDLL);
 	}
@@ -61,6 +62,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
     if (fdwReason == DLL_PROCESS_ATTACH)
     {
+        upd::enable_logging();
         upd::open_debug_terminal();
         upd::create_proxy(hinstDLL);
         CreateThread(0, 0, &NewThread, NULL, 0, NULL);
@@ -92,6 +94,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
     if (fdwReason == DLL_PROCESS_ATTACH)
     {
+        upd::enable_logging();
         upd::open_debug_terminal();
         upd::register_callback("DirectInput8Create", &CallbackDirectInput8Create, &fpDirectInput8Create);
         upd::create_proxy(hinstDLL);

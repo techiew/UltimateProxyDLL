@@ -15,6 +15,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 	{
 		try
 		{	
+			upd::enable_logging();
 			upd::open_debug_terminal();
 			upd::create_proxy_and_thread(hinstDLL, &NewThread);
 		}
